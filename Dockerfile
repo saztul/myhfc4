@@ -67,9 +67,8 @@ RUN apt-get -y install wget
 RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.1.3/dumb-init_1.1.3_amd64.deb
 RUN dpkg -i dumb-init_*.deb
 
-
-ADD ./scripts/runner.sh /runner.sh
-RUN chmod +x /runner.sh
+ADD ./scripts/runner.sh /usr/bin/runner.sh
+RUN chmod +x /usr/bin/runner.sh
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD [ "/runner.sh" ]
+CMD [ "/usr/bin/runner.sh" ]
