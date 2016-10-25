@@ -41,6 +41,7 @@ RUN apt update && \
         php5.6-soap \
         ssmtp \
         wkhtmltopdf \
+        pdftk \
         xvfb \
         cron
 
