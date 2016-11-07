@@ -43,7 +43,8 @@ RUN apt update && \
         wkhtmltopdf \
         pdftk \
         xvfb \
-        cron
+        cron \
+        unzip
 
 # PHP config
 ADD ./php/* /etc/php/5.6/apache2/
