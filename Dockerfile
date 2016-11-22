@@ -44,7 +44,12 @@ RUN apt update && \
         pdftk \
         xvfb \
         cron \
-        unzip
+        unzip \
+        language-pack-de
+
+# enable all german locales (iso for php)
+RUN sed -i '/de_DE/s/^# //' /etc/locale.gen
+RUN dpkg-reconfigure locales
 
 # PHP config
 ADD ./php/* /etc/php/5.6/apache2/
