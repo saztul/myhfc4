@@ -74,6 +74,12 @@ RUN apt-get -y install wget
 RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.1.3/dumb-init_1.1.3_amd64.deb
 RUN dpkg -i dumb-init_*.deb
 
+RUN wget http://download.gna.org/wkhtmltopdf/0.12/0.12.3/wkhtmltox-0.12.3_linux-generic-amd64.tar.xz && \
+    apt-get -y install xz-utils && \
+    tar xvf wkhtmltox-0.12.3_linux-generic-amd64.tar.xz && \
+    mkdir -p /opt/bin && \
+    mv wkhtmltox/bin/wkhtmlto* /opt/bin/
+
 ADD ./scripts/runner.sh /usr/bin/runner.sh
 RUN chmod +x /usr/bin/runner.sh
 
