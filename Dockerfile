@@ -38,7 +38,6 @@ RUN apt update && \
         php5.6-xml \
         php5.6-zip \
         php5.6-xmlrpc \
-        php5.6-xcache \
         php5.6-soap \
         ssmtp \
         wkhtmltopdf \
