@@ -4,6 +4,4 @@ if [ -n "$APACHE_UID" ]; then
 fi
 
 rm -f /var/run/apache2/apache2.pid
-
-/usr/sbin/cron &
 /usr/sbin/apachectl -d /etc/apache2 -e info -D FOREGROUND
