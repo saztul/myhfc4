@@ -61,3 +61,18 @@ RUN apt update \
         libgraphicsmagick++-q16-12 \
         libgraphicsmagick-q16-3 \
         sphinxsearch
+
+RUN mkdir -p /var/www/ \
+    && a2dissite 000-default \
+    && a2dissite default-ssl \
+    && a2enmod rewrite \
+    && a2enmod ssl \
+    && a2enmod php5.6 \
+    && a2dismod mpm_event \
+    && a2enmod mpm_prefork \
+    && dpkg -i dumb-init_*.deb \
+    && apt-get clean \
+    && chown -R www-data:www-data /var/www \
+    && a2enmod dbd authz_dbd authn_dbd mpm_prefork \
+        alias auth_digest authn_core authn_file \
+        authz_core authz_user dav dav_fs setenvif rewrite
