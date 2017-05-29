@@ -76,3 +76,5 @@ RUN mkdir -p /var/www/ \
     && a2enmod dbd authz_dbd authn_dbd mpm_prefork \
         alias auth_digest authn_core authn_file \
         authz_core authz_user dav dav_fs setenvif rewrite
+
+ADD apache/www-dir-opts.conf /etc/apache2/conf-enabled/www-dir-opts.conf
