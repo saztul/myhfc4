@@ -13,8 +13,8 @@ ADD ./apt/keys/* /etc/apt/trusted.gpg.d/
 # Apache 2 & PHP 5.6
 RUN apt update \
     && apt-get -y update \
-    && apt-get -y install --no-install-recommends wget \
-    && wget --no-check-certificate https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64.deb \
+    && apt-get -y install --no-install-recommends wget ca-certificates \
+    && wget https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64.deb \
     && apt-get -y install --no-install-recommends \
         mysql-client-5.7 \
         apache2 \
