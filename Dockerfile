@@ -7,44 +7,61 @@ USER root
 ENV DEBIAN_FRONTEND noninteractive
 
 # Apache 2 & PHP 7
-RUN apt update && \
-    apt-get -y update && \
-    apt-get -y install \
+RUN apt update \
+    && apt-get -y update \
+    && apt-get -y install --no-install-recommends wget ca-certificates \
+    && wget https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64.deb \
+    && dpkg -i dumb-init_*.deb \
+    && apt-get -y install --no-install-recommends \
         mysql-client-5.7 \
         apache2 \
         graphicsmagick \
-        libapache2-mod-php7.0 \
-        libgraphicsmagick-q16-3 \
+        imagemagick \
+        libapache2-mod-php \
         libxml2 \
         php-gettext \
-        php7.0 \
-        php7.0-cgi \
-        php7.0-cli \
-        php7.0-curl \
-        php7.0-gd \
+        php \
+        php-cgi \
+        php-cli \
+        php-curl \
+        php-gd \
         php-imagick \
-        php7.0-json \
-        php7.0-mcrypt \
-        php7.0-mbstring \
+        php-json \
+        php-mcrypt \
+        php-mbstring \
         php-memcache \
         php-memcached \
-        php7.0-mysql \
-        php7.0-mysqlnd \
-        php7.0-sqlite \
-        php7.0-xml \
-        php7.0-xmlrpc \
-        php7.0-soap \
+        php-mysql \
+        php-mysqlnd \
+        php-sqlite3 \
+        php-xml \
+        php-xmlrpc \
+        php-soap \
+        php-zip \
         ssmtp \
         wkhtmltopdf \
         pdftk \
         xvfb \
         cron \
+        curl \
         unzip \
-        language-pack-de
+        language-pack-de \
+        supervisor \
+        xz-utils \
+        libaprutil1-dbd-mysql \
+        ghostscript \
+        xpdf \
+        poppler-utils \
+        libgraphicsmagick++-q16-12 \
+        libgraphicsmagick-q16-3 \
+        sphinxsearch
 
-# enable all german locales (iso for php)
-RUN sed -i '/de_DE/s/^# //' /etc/locale.gen
-RUN dpkg-reconfigure locales
+# enable all german locales (iso for php) and configure timezones
+RUN sed -i '/de_DE/s/^# //' /etc/locale.gen \
+    && dpkg-reconfigure locales \
+    && ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime \
+    && dpkg-reconfigure -f noninteractive tzdata
+
 
 # Apache vhost config
 RUN mkdir -p /var/www/ && \
@@ -58,22 +75,34 @@ RUN mkdir -p /var/www/ && \
 
 EXPOSE 80
 
-VOLUME '/var/www/'
+VOLUME '/var/www'
 VOLUME '/etc/apache2/sites-enabled'
-VOLUME '/etc/cron.d/'
-
-RUN apt-get -y install wget
-RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.1.3/dumb-init_1.1.3_amd64.deb
-RUN dpkg -i dumb-init_*.deb
 
 RUN wget https://downloads.wkhtmltopdf.org/0.12/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz && \
-    apt-get -y install xz-utils && \
     tar xvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz && \
     mkdir -p /opt/bin && \
     mv wkhtmltox/bin/wkhtmlto* /opt/bin/
 
-ADD ./scripts/runner.sh /usr/bin/runner.sh
-RUN chmod +x /usr/bin/runner.sh
+ADD ./scripts/runner.sh /usr/local/bin/runner.sh
+ADD ./scripts/sphinx_server.sh /usr/local/bin/sphinx_server.sh
+ADD ./scripts/sphinx_indexer.sh /usr/local/bin/sphinx_indexer.sh
+ADD ./scripts/wkhtmltopdf /usr/local/bin/wkhtmltopdf
+ADD ./scripts/wkhtmltoimage /usr/local/bin/wkhtmltoimage
+ADD ./scripts/generate_sphinx_config.sh /etc/sphinx/generate_sphinx_config.sh
+ADD ./scripts/await_mysql.sh /usr/local/bin/await_mysql.sh
+ADD ./configs/supervisor.conf /etc/supervisord.conf
+ADD ./configs/php-dev.ini /etc/php/7.0/apache2/conf.d/30-php-dev.ini
+ADD ./cronjobs/cron \
+    ./cronjobs/sphinx-index-all \
+    ./cronjobs/sphinx-index-general \
+    /etc/cron.d/
+
+RUN chown -R www-data:www-data /var/www \
+    && chmod +x /usr/local/bin/runner.sh \
+    && chmod 0644 /etc/cron.d/* \
+    && touch /var/log/cron.log \
+    && mkdir -p /var/sphinx/general/ /var/sphinx/logs/
+
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD [ "/usr/bin/runner.sh" ]
+CMD ["/usr/bin/supervisord", "--nodaemon", "--configuration", "/etc/supervisord.conf"]

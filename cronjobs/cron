@@ -1,0 +1,5 @@
+###### Cronjobs werden vom myHFC direkt übernommen ######
+#
+# # Cronjobs...
+# # jede Minute
+* * * * * root /usr/bin/php -f /var/www/domains/myhfc/system/lib/vendor/myhfc/module-core/src/cronjobs/run.php >> /var/log/cron_myhfc.log 2>&1

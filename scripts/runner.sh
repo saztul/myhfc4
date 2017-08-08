@@ -3,7 +3,9 @@ if [ -n "$APACHE_UID" ]; then
   usermod --non-unique --uid $APACHE_UID www-data
 fi
 
-rm -f /var/run/apache2/apache2.pid
+# create .sessions directory
+mkdir -p /var/www/.sessions
+chown www-data:www-data -R /var/www/.sessions
 
-/usr/sbin/cron &
+rm -f /var/run/apache2/apache2.pid
 /usr/sbin/apachectl -d /etc/apache2 -e info -D FOREGROUND
