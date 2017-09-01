@@ -20,7 +20,7 @@ source general
     sql_attr_string         = scope
     sql_attr_string         = tab
     sql_attr_string         = image
-    sql_attr_uint           = id_result
+    sql_attr_string         = id_result
     sql_attr_uint           = id_client
     sql_attr_timestamp      = ts
 }
