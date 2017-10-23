@@ -38,6 +38,7 @@ RUN apt update \
         php-xmlrpc \
         php-soap \
         php-zip \
+        phpunit \
         ssmtp \
         wkhtmltopdf \
         pdftk \
@@ -103,6 +104,7 @@ RUN chown -R www-data:www-data /var/www \
     && touch /var/log/cron.log \
     && mkdir -p /var/sphinx/general/ /var/sphinx/logs/
 
+WORKDIR /var/www
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["/usr/bin/supervisord", "--nodaemon", "--configuration", "/etc/supervisord.conf"]
