@@ -9,7 +9,7 @@ ENV DEBIAN_FRONTEND noninteractive
 # Apache 2 & PHP 7
 RUN apt update \
     && apt-get -y update \
-    && apt-get -y install --no-install-recommends wget ca-certificates \
+    && apt-get -y install --no-install-recommends wget ca-certificates docker.io \
     && wget https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64.deb \
     && dpkg -i dumb-init_*.deb \
     && apt-get -y install --no-install-recommends \
