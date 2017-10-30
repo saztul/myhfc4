@@ -52,6 +52,7 @@ RUN apt update \
         libaprutil1-dbd-mysql \
         ghostscript \
         xpdf \
+        ruby \
         poppler-utils \
         libgraphicsmagick++-q16-12 \
         libgraphicsmagick-q16-3 \
