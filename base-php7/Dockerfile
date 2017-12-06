@@ -69,6 +69,7 @@ RUN mkdir -p /var/www/ \
     && dpkg -i dumb-init_*.deb \
     && apt-get clean \
     && chown -R www-data:www-data /var/www \
+    && rm -f /etc/cron.d/sphinxsearch \
     && a2enmod dbd authz_dbd authn_dbd mpm_prefork \
         alias auth_digest authn_core authn_file \
         authz_core authz_user dav dav_fs setenvif rewrite
