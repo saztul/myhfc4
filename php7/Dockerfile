@@ -21,19 +21,11 @@ RUN wget https://downloads.wkhtmltopdf.org/0.12/0.12.4/wkhtmltox-0.12.4_linux-ge
     mkdir -p /opt/bin && \
     mv wkhtmltox/bin/wkhtmlto* /opt/bin/
 
-ADD ./scripts/runner.sh /usr/local/bin/runner.sh
-ADD ./scripts/sphinx_server.sh /usr/local/bin/sphinx_server.sh
-ADD ./scripts/sphinx_indexer.sh /usr/local/bin/sphinx_indexer.sh
-ADD ./scripts/wkhtmltopdf /usr/local/bin/wkhtmltopdf
-ADD ./scripts/wkhtmltoimage /usr/local/bin/wkhtmltoimage
+ADD ./scripts/* /usr/local/bin/
 ADD ./scripts/generate_sphinx_config.sh /etc/sphinx/generate_sphinx_config.sh
-ADD ./scripts/await_mysql.sh /usr/local/bin/await_mysql.sh
 ADD ./configs/supervisor.conf /etc/supervisord.conf
-ADD ./configs/php-dev.ini /etc/php/7.0/apache2/conf.d/30-php-dev.ini
-ADD ./cronjobs/cron \
-    ./cronjobs/sphinx-index-all \
-    ./cronjobs/sphinx-index-general \
-    /etc/cron.d/
+ADD ./configs/php.ini /etc/php/7.0/apache2/conf.d/myhfc.ini
+ADD ./cronjobs/* /etc/cron.d/
 
 RUN chown -R www-data:www-data /var/www \
     && chmod +x /usr/local/bin/runner.sh \

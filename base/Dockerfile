@@ -1,6 +1,6 @@
 FROM ubuntu:xenial
 
-MAINTAINER Lutz Selke <ls@hfci.de>
+LABEL maintainer="Lutz Selke <ls@hfci.de>"
 
 USER root
 
@@ -42,6 +42,7 @@ RUN apt update \
         php5.6-zip \
         php5.6-xmlrpc \
         php5.6-soap \
+        phpunit \
         ssmtp \
         wkhtmltopdf \
         pdftk \
