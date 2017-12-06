@@ -1,0 +1,1 @@
+45 3 * * * root /usr/bin/indexer -c /etc/sphinx/production.conf --all --rotate >> /var/log/cron.log 2>&1
