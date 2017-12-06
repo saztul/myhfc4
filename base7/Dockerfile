@@ -1,6 +1,6 @@
 FROM ubuntu:xenial
 
-MAINTAINER Lutz Selke <ls@hfci.de>
+LABEL maintainer="Lutz Selke <ls@hfci.de>"
 
 USER root
 
@@ -9,8 +9,9 @@ ENV DEBIAN_FRONTEND noninteractive
 # Apache 2 & PHP 7
 RUN apt update \
     && apt-get -y update \
-    && apt-get -y install --no-install-recommends wget ca-certificates \
+    && apt-get -y install --no-install-recommends wget ca-certificates docker.io \
     && wget https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64.deb \
+    && dpkg -i dumb-init_*.deb \
     && apt-get -y install --no-install-recommends \
         mysql-client-5.7 \
         apache2 \
@@ -37,6 +38,7 @@ RUN apt update \
         php-xmlrpc \
         php-soap \
         php-zip \
+        phpunit \
         ssmtp \
         wkhtmltopdf \
         pdftk \
@@ -50,6 +52,7 @@ RUN apt update \
         libaprutil1-dbd-mysql \
         ghostscript \
         xpdf \
+        ruby \
         poppler-utils \
         libgraphicsmagick++-q16-12 \
         libgraphicsmagick-q16-3 \
@@ -71,3 +74,5 @@ RUN mkdir -p /var/www/ \
         authz_core authz_user dav dav_fs setenvif rewrite
 
 ADD apache/www-dir-opts.conf /etc/apache2/conf-enabled/www-dir-opts.conf
+
+WORKDIR /var/www

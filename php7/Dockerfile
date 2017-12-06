@@ -1,84 +1,20 @@
-FROM ubuntu:xenial
+FROM hfcils/myhfc4:base7
 
-MAINTAINER Lutz Selke <ls@hfci.de>
+LABEL maintainer="Lutz Selke <ls@hfci.de>"
 
-USER root
+EXPOSE 80
 
-ENV DEBIAN_FRONTEND noninteractive
+VOLUME '/var/www'
+VOLUME '/etc/apache2/sites-enabled'
 
-# Apache 2 & PHP 7
-RUN apt update \
-    && apt-get -y update \
-    && apt-get -y install --no-install-recommends wget ca-certificates docker.io \
-    && wget https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64.deb \
-    && dpkg -i dumb-init_*.deb \
-    && apt-get -y install --no-install-recommends \
-        mysql-client-5.7 \
-        apache2 \
-        graphicsmagick \
-        imagemagick \
-        libapache2-mod-php \
-        libxml2 \
-        php-gettext \
-        php \
-        php-cgi \
-        php-cli \
-        php-curl \
-        php-gd \
-        php-imagick \
-        php-json \
-        php-mcrypt \
-        php-mbstring \
-        php-memcache \
-        php-memcached \
-        php-mysql \
-        php-mysqlnd \
-        php-sqlite3 \
-        php-xml \
-        php-xmlrpc \
-        php-soap \
-        php-zip \
-        phpunit \
-        ssmtp \
-        wkhtmltopdf \
-        pdftk \
-        xvfb \
-        cron \
-        curl \
-        unzip \
-        language-pack-de \
-        supervisor \
-        xz-utils \
-        libaprutil1-dbd-mysql \
-        ghostscript \
-        xpdf \
-        ruby \
-        poppler-utils \
-        libgraphicsmagick++-q16-12 \
-        libgraphicsmagick-q16-3 \
-        sphinxsearch
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["/usr/bin/supervisord", "--nodaemon", "--configuration", "/etc/supervisord.conf"]
 
 # enable all german locales (iso for php) and configure timezones
 RUN sed -i '/de_DE/s/^# //' /etc/locale.gen \
     && dpkg-reconfigure locales \
     && ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime \
     && dpkg-reconfigure -f noninteractive tzdata
-
-
-# Apache vhost config
-RUN mkdir -p /var/www/ && \
-    a2dissite 000-default && \
-    a2dissite default-ssl && \
-    a2enmod rewrite && \
-    a2enmod ssl && \
-    a2enmod php7.0 && \
-    a2dismod mpm_event && \
-    a2enmod mpm_prefork
-
-EXPOSE 80
-
-VOLUME '/var/www'
-VOLUME '/etc/apache2/sites-enabled'
 
 RUN wget https://downloads.wkhtmltopdf.org/0.12/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz && \
     tar xvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz && \
@@ -105,7 +41,3 @@ RUN chown -R www-data:www-data /var/www \
     && touch /var/log/cron.log \
     && mkdir -p /var/sphinx/general/ /var/sphinx/logs/
 
-WORKDIR /var/www
-
-ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["/usr/bin/supervisord", "--nodaemon", "--configuration", "/etc/supervisord.conf"]
